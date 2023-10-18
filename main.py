@@ -11,12 +11,13 @@ PASSWORD = "izbt umrb wxek jfxb"
 
 def is_iss_overhead():
     iss_response = requests.get(url="http://api.open-notify.org/iss-now.json")
+    iss_response.raise_for_status()
     data = iss_response.json()
 
     longitude = float(data["iss_position"]["longitude"])
     latitude = float(data["iss_position"]["latitude"])
 
-    if MY_LONG-5 <= longitude >= MY_LONG+5 and MY_LAT-5 <= latitude >= MY_LAT+5:
+    if MY_LONG-5 <= longitude <= MY_LONG+5 and MY_LAT-5 <= latitude <= MY_LAT+5:
         return True
 
 
@@ -30,9 +31,9 @@ def is_night():
     response.raise_for_status()
 
     data = response.json()["results"]
-
     sunrise = int(data["sunrise"].split("T")[1].split(":")[0])
     sunset = int(data["sunset"].split("T")[1].split(":")[0])
+
     now = datetime.now().hour
     if now >= sunset or now <= sunrise:
         return True
@@ -47,4 +48,5 @@ while True:
             connection.sendmail(
                 from_addr=MY_EMAIL,
                 to_addrs="ayoubim@berea.edu",
-                msg=f"subject:Happy Birthday!\n\nHey Look up!")
+                msg=f"subject:Look Up!\n\nThe ISS is above you in the sky."
+            )
